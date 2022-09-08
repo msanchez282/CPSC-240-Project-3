@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 // Matthew Sanchez and Alexander Gomez
@@ -24,6 +25,22 @@ void readData() {
 void displayBill() {
 	cout << "Total bill is $" << totalBill << endl;
 }
+
+
+// Q2 functions and declarations
+int score, average, numScores;
+
+void averageStart() {
+	cout << "Let's compute your score's average: " << endl;
+}
+void askScore() {
+	cout << "Enter your score (-1) to stop: ";
+	cin >> score;
+}
+void displayAverage() {
+	cout << "Your average is: " << average;
+}
+
 
 int main() {
 
@@ -57,17 +74,39 @@ int main() {
 		cmp sizeSandwich, 10;	// compare sizeSandwich and 10
 		Jne twelveSandwich;		// If sizeSandwich != 10, jump to twelveSandwich
 		imul sandwichTen;		// multiply numSandwiches by sandwichTen(price per 10 inch sandwich)
-		add totalBill, eax;
-		Jmp display;
-	twelveSandwich:
-		imul sandwichTwelve;
-		add totalBill, eax;
+		add totalBill, eax;		// add (numSandwiches * sandwichTen) to totalBill
+		Jmp display;			// jump to display
+	twelveSandwich:	
+		imul sandwichTwelve;	// multiply numSandwiches with price per twelve inch sandwich
+		add totalBill, eax;		// add (numSandwiches * sandwichTwelve) to totalBill
 	display:
 		call displayBill;
-		sub numCustomers, 1;
-		cmp numCustomers, 0;
-		Jne start;
+		sub numCustomers, 1;	// subtract 1 from the number of customers
+		cmp numCustomers, 0;	// compare the number of customers to 0
+		Jne start;				// If numCustomers != 0, jump back to the start
 	}
+
+	cout << endl << endl << endl;
+
+	// Q2
+
+	_asm {
+		call averageStart;
+	start2:
+		call askScore;
+		cmp score, -1;		// compare score to -1
+		Je endloop;			// if score == -1, jump to calculate
+		inc numScores;		// add 1 to numScores
+		add eax, score;		// add score to eax
+		Jmp start2;			// loop back to start2
+	endloop:
+		cdq;				// edx:eax == added all scores
+		idiv numScores;		// 
+		mov average, eax;	// move quotient to average
+		call displayAverage;// displayAverage
+	}
+
+
 
 	return 0;
 }
