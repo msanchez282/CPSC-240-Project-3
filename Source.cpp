@@ -9,8 +9,8 @@ using namespace std;
 
 // Q1 functions
 
-int sodaPrice = 2, waterPrice = 1, sandwichTen = 3, sandwichTwelve = 5;
-int numCustomers, totalBill, numDrinks, numSandwiches, sizeSandwich;
+short sodaPrice = 2, waterPrice = 1, sandwichTen = 3, sandwichTwelve = 5;
+short numCustomers, totalBill, numDrinks, numSandwiches, sizeSandwich;
 char typeDrinks;
 void readData() {
 	cout << "How many drinks? ";
@@ -28,7 +28,8 @@ void displayBill() {
 
 
 // Q2 functions and declarations
-int score, average, numScores;
+int score, average;
+short numScores;
 
 void averageStart() {
 	cout << "Let's compute your score's average: " << endl;
@@ -41,6 +42,23 @@ void displayAverage() {
 	cout << "Your average is: " << average;
 }
 
+
+
+// Q4 functions and declarations
+short a, b, c, d, e, f, X, Y;
+void cramerStart() {
+	cout << "This program solves the system" << endl;
+	cout << "		aX + bY = c" << endl;
+	cout << "   	dX + eY = f" << endl;
+	cout << "Enter the values of a, b, and c: ";
+	cin >> a >> b >> c;
+	cout << "Enter the values of d,e, and f: ";
+	cin >> d >> e >> f;
+}
+void displayCramer() {
+	cout << "X = " << X << endl;
+	cout << "Y = " << Y << endl;
+}
 
 int main() {
 
@@ -61,24 +79,24 @@ int main() {
 	_asm {
 	start:
 		call readData;
-		mov eax, numDrinks;		// eax = numDrinks
+		mov ax, numDrinks;		// ax = numDrinks
 		cmp typeDrinks, 'S';	// compare typeDrinks to 'S'
 		Jne Water;				// if typeDrinks != 'S', jump to water
 		imul sodaPrice;			// if typeDrinks == 'S', multiply numDrinks by 2
-		mov totalBill, eax;		// store active total in totalBill
+		mov totalBill, ax;		// store active total in totalBill
 		Jmp Sandwiches;
 	Water:
-		mov totalBill, eax;		// numDrinks * 1 for water is just numDrinks, so move that to active total
+		mov totalBill, ax;		// numDrinks * 1 for water is just numDrinks, so move that to active total
 	Sandwiches:
-		mov eax, numSandwiches; // eax == numSandwiches
+		mov ax, numSandwiches;  // ax == numSandwiches
 		cmp sizeSandwich, 10;	// compare sizeSandwich and 10
 		Jne twelveSandwich;		// If sizeSandwich != 10, jump to twelveSandwich
 		imul sandwichTen;		// multiply numSandwiches by sandwichTen(price per 10 inch sandwich)
-		add totalBill, eax;		// add (numSandwiches * sandwichTen) to totalBill
+		add totalBill, ax;		// add (numSandwiches * sandwichTen) to totalBill
 		Jmp display;			// jump to display
 	twelveSandwich:	
 		imul sandwichTwelve;	// multiply numSandwiches with price per twelve inch sandwich
-		add totalBill, eax;		// add (numSandwiches * sandwichTwelve) to totalBill
+		add totalBill, ax;		// add (numSandwiches * sandwichTwelve) to totalBill
 	display:
 		call displayBill;
 		sub numCustomers, 1;	// subtract 1 from the number of customers
@@ -95,18 +113,62 @@ int main() {
 	start2:
 		call askScore;
 		cmp score, -1;		// compare score to -1
-		Je endloop;			// if score == -1, jump to calculate
+		Je calculate;		// if score == -1, jump to calculate
 		inc numScores;		// add 1 to numScores
 		add eax, score;		// add score to eax
 		Jmp start2;			// loop back to start2
-	endloop:
+	calculate:
 		cdq;				// edx:eax == added all scores
-		idiv numScores;		// 
+		div numScores;		// 
 		mov average, eax;	// move quotient to average
 		call displayAverage;// displayAverage
 	}
 
 
+
+
+	// Q4
+	_asm {
+		call cramerStart;
+		
+		// calculate Y
+		mov ax, b;			// ax = b
+		imul d;				// ax = b * d
+		mov bx, ax;			// bx = b * d
+		mov ax, a;			// ax = a
+		imul e;				// ax = a * e
+		sub ax, bx;			// ax = (a * e) - (b * d)
+		mov cx, ax;			// cx = (a * e) - (b * d)
+		mov ax, c;			// ax = c
+		imul d;				// ax = c * d
+		mov bx, ax;			// bx = c* d
+		mov ax, a;			// ax = a
+		imul f;				// ax = a * f
+		sub ax, bx;			// ax = (a * f) - (c * d)
+		cwd;				// dx:ax = (a * f) - (c * d)
+		idiv cx;			// ax = quotient, dx = remainder
+		mov Y, ax;
+
+		// Calculate X
+		mov ax, b;			// ax = b
+		imul d;				// ax = b * d
+		mov bx, ax;			// bx = b * d
+		mov ax, a;			// ax = a
+		imul e;				// ax = a * e
+		sub ax, bx;			// ax = (a * e) - (b * d)
+		mov cx, ax;			// cx = (a * e) - (b * d)
+		mov ax, b;			// ax = b
+		imul f;				// ax = b * f
+		mov bx, ax;			// bx = b * f
+		mov ax, c;			// ax = c
+		imul e;				// ax = c * e
+		sub ax, bx;			// ax = (c * e) - (b * f)
+		cwd;				// dx:ax = (c * e) - (b * f)
+		idiv cx;			// ax = quotient, dx = remainder
+		mov X, ax;
+
+		call displayCramer;
+	}
 
 	return 0;
 }
