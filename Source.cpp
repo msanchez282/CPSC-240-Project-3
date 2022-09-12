@@ -29,7 +29,7 @@ void displayBill() {
 
 // Q2 functions and declarations
 int score, average;
-short numScores;
+short numScores = 0;
 
 void averageStart() {
 	cout << "Let's compute your score's average: " << endl;
@@ -39,9 +39,11 @@ void askScore() {
 	cin >> score;
 }
 void displayAverage() {
-	cout << "Your average is: " << average;
+	cout << "Your average is: " << average << endl;
 }
-
+void displayNumScores() {
+	cout << numScores;
+}
 
 
 // Q4 functions and declarations
@@ -104,7 +106,7 @@ int main() {
 		Jne start;				// If numCustomers != 0, jump back to the start
 	}
 
-	cout << endl << endl << endl;
+	cout << endl << endl;
 
 	// Q2
 
@@ -115,15 +117,18 @@ int main() {
 		cmp score, -1;		// compare score to -1
 		Je calculate;		// if score == -1, jump to calculate
 		inc numScores;		// add 1 to numScores
-		add eax, score;		// add score to eax
+		mov ebx, score;
+		add eax, ebx;		// add score to eax
 		Jmp start2;			// loop back to start2
 	calculate:
 		cdq;				// edx:eax == added all scores
-		div numScores;		// 
+		div numScores;		//
 		mov average, eax;	// move quotient to average
 		call displayAverage;// displayAverage
+		call displayNumScores;
 	}
 
+	cout << endl << endl;
 
 
 
