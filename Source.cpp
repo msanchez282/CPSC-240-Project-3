@@ -49,7 +49,7 @@ void displayNumScores() {
 
 // Q3 functions and declarations
 
-char charIn = 'a';
+char charIn;
 int capitalCounter = 0, lowerCounter = 0;
 void askForSentence() {
 	cout << "Enter a sentence: ";
@@ -143,8 +143,8 @@ int main() {
 		add eax, score;		// add score to eax
 		Jmp start2;			// loop back to start2
 	calculate:
-		//cdq;				// edx:eax == added all scores
-		//div numScores;		//
+		cdq;				// edx:eax == added all scores
+		div numScores;		//
 		mov average, eax;	// move quotient to average
 		call displayAverage;// displayAverage
 		call displayNumScores;
