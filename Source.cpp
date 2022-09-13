@@ -28,7 +28,7 @@ void displayBill() {
 
 
 // Q2 functions and declarations
-int score, average, numScores = 0;
+int score = 0, average = 0, numScores = 0;
 
 void averageStart() {
 	cout << "Let's compute your score's average: " << endl;
@@ -128,6 +128,7 @@ int main() {
 
 	_asm {
 		call averageStart;
+		mov ebx, 0;
 	start2:
 		call askScore;
 		cmp score, -1;		// compare score to -1
@@ -143,12 +144,10 @@ int main() {
 		call displayAverage;// displayAverage
 		call displayNumScores;
 	}
-
-	cout << endl << endl;
-
+		cout << endl << endl;
 	// Q3
 
-	_asm {
+	_asm{
 		call askForSentence;
 	q3start:
 		call readChar;
