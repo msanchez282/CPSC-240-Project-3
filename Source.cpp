@@ -46,6 +46,23 @@ void displayNumScores() {
 }
 
 
+
+// Q3 functions and declarations
+
+char charIn = 'a';
+int capitalCounter = 0, lowerCounter = 0;
+void askForSentence() {
+	cout << "Enter a sentence: ";
+}
+void readChar() {
+	charIn = cin.get();
+}
+void displayLetterCounts() {
+	cout << "No. of uppercase letters = " << capitalCounter << endl;
+	cout << "No. of lowercase letters = " << lowerCounter << endl;
+}
+
+
 // Q4 functions and declarations
 short a, b, c, d, e, f, X, Y;
 void cramerStart() {
@@ -111,18 +128,23 @@ int main() {
 	// Q2
 
 	_asm {
+		sub eax, eax;
 		call averageStart;
+		call askScore;
+		cmp score, -1;
+		Je calculate;
+		mov eax, score;
+		inc numScores;
 	start2:
 		call askScore;
 		cmp score, -1;		// compare score to -1
 		Je calculate;		// if score == -1, jump to calculate
 		inc numScores;		// add 1 to numScores
-		mov ebx, score;
-		add eax, ebx;		// add score to eax
+		add eax, score;		// add score to eax
 		Jmp start2;			// loop back to start2
 	calculate:
-		cdq;				// edx:eax == added all scores
-		div numScores;		//
+		//cdq;				// edx:eax == added all scores
+		//div numScores;		//
 		mov average, eax;	// move quotient to average
 		call displayAverage;// displayAverage
 		call displayNumScores;
@@ -130,7 +152,38 @@ int main() {
 
 	cout << endl << endl;
 
+	// Q3
 
+	_asm {
+		call askForSentence;
+	q3start:
+		call readChar;
+		cmp charIn, '\n';			// if charIn == new line
+		Je displayLetterCounts;		// jump to display
+		cmp charIn, ' ';			// if charIn == ' '
+		Je readNextChar;			// jump to readNextChar section
+		cmp charIn, 65;				// if character is less than 65 (ASCII code for first capital letter)
+		Jl readNextChar;			// jump to readNextChar because it's not a letter
+		cmp charIn, 90;				// compare character to 90 (ASCII code for last capital letter)
+		Jle isCapital;				// jump to isCapital because it is in the range (65, 90)
+		cmp charIn, 97;				// compare character to 97 (ASCII code for first lower case letter)
+		Jl readNextChar;			// Jump to readNextChar
+		cmp charIn, 122;			// compare to 122 (ASCII code for last lower case letter)
+		Jle isLowerCase;			// is a lower case number, jump to isLowerCase
+		cmp charIn, 123;			// see if it's greater than all the other ASCIIs we need
+		Jge readNextChar;			// not a letter so read next character
+
+	readNextChar:
+		Jmp q3start;				// jumps back to read next char
+	isCapital:
+		inc capitalCounter;			// increase capital counter
+		Jmp q3start;				// jump to start
+	isLowerCase:
+		inc lowerCounter;			// increase lower counter
+		Jmp q3start;				// jump to start
+	displayCounts:
+		call displayLetterCounts;
+	}
 
 	// Q4
 	_asm {
