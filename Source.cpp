@@ -28,8 +28,7 @@ void displayBill() {
 
 
 // Q2 functions and declarations
-int score, average;
-short numScores = 0;
+int score, average, numScores = 0;
 
 void averageStart() {
 	cout << "Let's compute your score's average: " << endl;
@@ -128,23 +127,18 @@ int main() {
 	// Q2
 
 	_asm {
-		sub eax, eax;
 		call averageStart;
-		call askScore;
-		cmp score, -1;
-		Je calculate;
-		mov eax, score;
-		inc numScores;
 	start2:
 		call askScore;
 		cmp score, -1;		// compare score to -1
 		Je calculate;		// if score == -1, jump to calculate
 		inc numScores;		// add 1 to numScores
-		add eax, score;		// add score to eax
+		add ebx, score;		// add score to ebx
 		Jmp start2;			// loop back to start2
 	calculate:
+		mov eax, ebx;
 		cdq;				// edx:eax == added all scores
-		div numScores;		//
+		idiv numScores;		//
 		mov average, eax;	// move quotient to average
 		call displayAverage;// displayAverage
 		call displayNumScores;
@@ -183,7 +177,7 @@ int main() {
 		Jmp q3start;				// jump to start
 	displayCounts:
 		call displayLetterCounts;
-	}
+	} 
 
 	// Q4
 	_asm {
